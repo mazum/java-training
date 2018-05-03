@@ -3,13 +3,18 @@ package com.mazum.training.junit;
 import java.util.Calendar;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.*;
 
 public class TaxCalculatorImplTest_BeforeAfterTest {
     
     private TaxCalculatorImpl taxCalculator = null;
+    
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
     
     @Before
     public void prepareTaxCalculator() {
@@ -83,6 +88,15 @@ public class TaxCalculatorImplTest_BeforeAfterTest {
     	} catch (InvalidYearException expected) {
     		assertEquals(expected.getMessage(),"No tax calculations available yet for the year 2019");
     	}
+    }
+    
+    @Test
+    public void exceptionShouldIncludeAClearMessageAlternate() throws InvalidYearException {    
+    	exception.expect(InvalidYearException.class);
+    	exception.expectMessage("No tax calculations available yet for the year 2019");
+    	double income = 30000;
+        int year = getCurrentYear() + 1;
+        taxCalculator.calculateIncomeTax(income, year);
     }
     
     private int getCurrentYear() {
